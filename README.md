@@ -1,267 +1,165 @@
-# 🚀 AI Workflow Automation Platform (n8n Clone)
+# ⚡ n8n-clone: Visual Workflow Automation & AI Agent Platform
 
-A full-stack workflow automation platform inspired by n8n, featuring a visual workflow builder, AI-powered agents, tool execution, HTTP integrations, workflow persistence, authentication, and MongoDB storage.
+A lightweight, developer-friendly, full-stack workflow automation platform inspired by n8n. Build, connect, and execute automated flows featuring standard API calls, LLM tasks, and self-reasoning AI Agents equipped with tools.
+
+---
 
 ## ✨ Features
 
-### Workflow Builder
-- Visual workflow canvas using React Flow
-- Multiple node types
-- Connect nodes visually
-- Node configuration panel
-- Workflow execution engine
+### 🌐 Visual Workflow Canvas
+- Dynamic node-based builder using **React Flow (v11)**.
+- Connect, reposition, and customize execution flows interactively.
+- Detailed Sidebar configuration panel to customize node variables and configurations.
 
-### AI Agent System
-- Multi-step AI agent execution
-- Tool calling support
-- Dynamic reasoning loop
-- LLM integration
+### 🤖 Autonomous ReAct AI Agent Node
+- Multi-step reasoning loop (ReAct model) executing up to 5 reasoning actions.
+- Automatically selects, parses, and executes built-in tools based on context.
+- Returns clean JSON actions and answers.
 
-### Node Types
+### 🔌 Diverse Node Library
+- **Agent Node**: Triggers the autonomous agentic execution loops.
+- **LLM Node**: Interacts directly with text completion endpoints.
+- **HTTP Node**: Performs GET requests to fetch data from external APIs.
 
-#### Agent Node
-- AI agent execution
-- Tool selection
-- Multi-step reasoning
+### 💾 Workflow Management
+- Persist, save, load, and delete workflows.
+- User-specific database mapping allows separate configurations per user.
 
-#### LLM Node
-- Direct LLM interaction
-- Prompt processing
-- AI responses
-
-#### HTTP Node
-- REST API calls
-- External service integration
-- API data retrieval
-
-### Workflow Management
-- Create workflows
-- Save workflows
-- Load workflows
-- Delete workflows
-- User-specific workflows
-
-### Authentication
-- User registration
-- User login
-- JWT authentication
-- Protected routes
-
-### Database
-- MongoDB integration
-- Workflow persistence
-- User management
+### 🔒 Security & Authentication
+- Secure signup and login endpoints.
+- Password hashing (bcryptjs) and protected server routes using JWT (JSON Web Tokens).
 
 ---
 
-# 🛠 Tech Stack
+## 🛠 Tech Stack
 
-## Frontend
-- Next.js
-- React
-- TypeScript
-- React Flow
-- Tailwind CSS
-
-## Backend
-- Node.js
-- Express.js
-- TypeScript
-
-## Database
-- MongoDB
-- Mongoose
-
-## Authentication
-- JWT
-- bcryptjs
-
-## AI
-- Gemini API
-- Agent Executor
-- Tool Calling System
+- **Frontend**: Next.js (v16 with App Router), React Flow (v11), Tailwind CSS (v4)
+- **Backend**: Node.js, Express.js (v5), TypeScript
+- **Database**: MongoDB & Mongoose
+- **AI Integrations**: OpenRouter API (GPT-3.5-Turbo for agent reasoning and LLM prompts)
 
 ---
 
-# 📂 Project Structure
+## 📂 Project Structure
 
 ```bash
-n8n-clone/
-│
-├── frontend/
+n8n/
+├── backend/                  # TypeScript Express Server
 │   ├── src/
-│   │   ├── app/
-│   │   ├── components/
-│   │   └── styles/
+│   │   ├── agents/           # LLM client & ReAct Agent Executor
+│   │   ├── config/           # Database setup
+│   │   ├── engine/           # Execution engines
+│   │   ├── middleware/       # Auth verification middlewares
+│   │   ├── models/           # MongoDB user & workflow schemas
+│   │   ├── nodes/            # Node actions (HTTP, LLM, Agent)
+│   │   ├── registry/         # Registry matching node types to executors
+│   │   ├── routes/           # Auth and workflow routes
+│   │   ├── tools/            # Agent tools (calculator, weather wttr.in API)
+│   │   └── server.ts         # Server bootstrapper
+│   ├── package.json
+│   └── tsconfig.json
 │
-├── backend/
+├── frontend/                 # Next.js Application
 │   ├── src/
-│   │   ├── agents/
-│   │   ├── config/
-│   │   ├── engine/
-│   │   ├── middleware/
-│   │   ├── models/
-│   │   ├── nodes/
-│   │   ├── registry/
-│   │   ├── routes/
-│   │   ├── tools/
-│   │   └── server.ts
-│
+│   │   ├── app/              # App Router (Home, login, signup pages)
+│   │   ├── components/       # Custom React Flow nodes & sidebar
+│   └── package.json
 └── README.md
 ```
 
 ---
 
-# ⚡ Installation
+## 🚀 Getting Started
 
-## Clone Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/n8n-clone.git
-
-cd n8n-clone
-```
+### 📋 Prerequisites
+- **Node.js** (v18+)
+- **MongoDB** (Local instance or MongoDB Atlas cluster)
+- **OpenRouter API Key** (or custom LLM API provider key)
 
 ---
 
-# Backend Setup
+### 1. Backend Setup
 
-```bash
-cd backend
+1. Navigate to the `backend` folder:
+   ```bash
+   cd backend
+   ```
 
-npm install
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Create `.env`
+3. Create a `.env` file in the root of the `backend` directory:
+   ```env
+   PORT=5000
+   MONGO_URI=your_mongodb_connection_string
+   JWT_SECRET=your_secret_key
+   OPENROUTER_API_KEY=your_openrouter_api_key
+   ```
 
-```env
-PORT=5000
-
-MONGO_URI=your_mongodb_connection_string
-
-JWT_SECRET=your_secret_key
-
-GEMINI_API_KEY=your_gemini_api_key
-```
-
-Run backend
-
-```bash
-npm run dev
-```
-
-Backend runs on:
-
-```bash
-http://localhost:5000
-```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+   The backend will start on `http://localhost:5000`.
 
 ---
 
-# Frontend Setup
+### 2. Frontend Setup
 
-```bash
-cd frontend
+1. Navigate to the `frontend` folder:
+   ```bash
+   cd ../frontend
+   ```
 
-npm install
-```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-Create `.env.local`
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
-```
-
-Run frontend
-
-```bash
-npm run dev
-```
-
-Frontend runs on:
-
-```bash
-http://localhost:3000
-```
+3. Start the Next.js development server:
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000) to access the UI.
 
 ---
 
-# 🔐 Authentication API
+## 🔒 Authentication API
 
-## Signup
-
-```http
-POST /auth/signup
-```
-
-Request
-
+### Signup
+`POST /auth/signup`
 ```json
 {
-  "email": "test@example.com",
-  "password": "password123"
+  "email": "user@example.com",
+  "password": "securepassword"
 }
 ```
 
----
-
-## Login
-
-```http
-POST /auth/login
-```
-
-Request
-
+### Login
+`POST /auth/login`
 ```json
 {
-  "email": "test@example.com",
-  "password": "password123"
+  "email": "user@example.com",
+  "password": "securepassword"
 }
 ```
-
-Response
-
-```json
-{
-  "token": "jwt_token"
-}
-```
+*Returns a `{ token: "jwt_token" }` payload for local authorization.*
 
 ---
 
-# 📊 Workflow APIs
+## 📊 Workflow APIs
 
-## Save Workflow
-
-```http
-POST /workflows
-```
-
-## Get Workflows
-
-```http
-GET /workflows
-```
-
-## Delete Workflow
-
-```http
-DELETE /workflows/:id
-```
+- **Save Workflow**: `POST /workflows` (Protected)
+- **Get Workflows**: `GET /workflows` (Protected)
+- **Delete Workflow**: `DELETE /workflows/:id` (Protected)
 
 ---
 
-# 🤖 Workflow Execution
+## 🤖 Workflow Execution API
 
-## Execute Workflow
-
-```http
-POST /run-workflow
-```
-
-Example
-
+`POST /run-workflow`
 ```json
 {
   "nodes": [
@@ -276,9 +174,7 @@ Example
   "edges": []
 }
 ```
-
-Response
-
+Response:
 ```json
 {
   "1": "900"
@@ -287,39 +183,25 @@ Response
 
 ---
 
-# 🚀 Future Improvements
+## 💼 Portfolio Description
 
-- Drag-and-drop node sidebar
-- Workflow execution animation
-- Dark mode
-- User profile management
-- Workflow scheduling
-- Webhook support
-- Docker deployment
-- Real-time collaboration
+**Full-Stack AI Workflow Automation Platform (n8n Clone)**
+Built a full-stack workflow automation platform inspired by n8n. Designed and implemented a visual workflow builder using Next.js and React Flow, backed by a Node.js/Express execution engine. Configured MongoDB persistence for user workflows, set up JWT-based authentication, and designed a custom ReAct-based AI Agent with self-reasoning capabilities and tool-execution support.
 
 ---
 
-# 💼 Resume Description
-
-Built a full-stack workflow automation platform inspired by n8n with AI-powered agents, visual workflow builder, MongoDB persistence, JWT authentication, and tool execution capabilities using Next.js, React, Node.js, Express, TypeScript, and MongoDB.
-
----
-
-# 👨‍💻 Author
+## 👨‍💻 Author
 
 **Jeetu Pal**
-
-GitHub: https://github.com/YOUR_USERNAME
-
-LinkedIn: https://linkedin.com/in/YOUR_PROFILE
+- **GitHub**: [jeetupal31](https://github.com/jeetupal31)
+- **Email**: jeetupal.pal31@gmail.com
 
 ---
 
-# 📄 License
+## 📄 License
 
-MIT License
+This project is licensed under the MIT License.
 
 ---
 
-⭐ If you found this project useful, consider giving it a star on GitHub.
+⭐ If you found this project useful, consider giving it a star on GitHub!
