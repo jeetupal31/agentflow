@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1280, height=800" />
+<title>AgentFlow – Login</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { margin: 0; width: 1280px; height: 800px; overflow: hidden; }
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { font-family: 'Inter', sans-serif; }
+</style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900 flex items-center justify-center" style="min-height:800px">
+
+  <!-- Animated background dots -->
+  <div class="absolute inset-0 overflow-hidden opacity-20">
+    <div class="absolute top-20 left-40 w-72 h-72 bg-indigo-500 rounded-full filter blur-3xl"></div>
+    <div class="absolute bottom-20 right-40 w-96 h-96 bg-purple-600 rounded-full filter blur-3xl"></div>
+  </div>
+
+  <div class="relative w-full max-w-sm mx-auto px-4">
+    <!-- Logo -->
+    <div class="flex items-center justify-center gap-3 mb-8">
+      <div class="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30">
+        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+      </div>
+      <span class="text-2xl font-bold text-white tracking-tight">AgentFlow</span>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-2xl p-8">
+      <h2 class="text-xl font-bold text-gray-900 mb-1">Sign in</h2>
+      <p class="text-sm text-gray-500 mb-6">Welcome back to your AI workflows</p>
+
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-1.5">Email</label>
+          <div class="w-full border border-indigo-400 rounded-lg px-3 py-2.5 text-sm bg-indigo-50 text-gray-700 ring-2 ring-indigo-200">
+            jeetu@example.com
+          </div>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-700 block mb-1.5">Password</label>
+          <div class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm text-gray-400">
+            ••••••••••
+          </div>
+        </div>
+
+        <div class="w-full bg-indigo-600 text-white py-2.5 rounded-lg text-sm font-medium text-center shadow-md shadow-indigo-500/30 cursor-pointer hover:bg-indigo-700">
+          Sign in
+        </div>
+      </div>
+
+      <p class="text-center text-sm text-gray-500 mt-6">
+        Don't have an account?
+        <span class="text-indigo-600 font-medium ml-1 cursor-pointer">Sign up</span>
+      </p>
+    </div>
+
+    <!-- Features hint -->
+    <div class="flex justify-center gap-6 mt-6">
+      <div class="flex items-center gap-1.5 text-gray-400 text-xs">
+        <svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        No credit card
+      </div>
+      <div class="flex items-center gap-1.5 text-gray-400 text-xs">
+        <svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        Free to start
+      </div>
+      <div class="flex items-center gap-1.5 text-gray-400 text-xs">
+        <svg class="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        JWT secured
+      </div>
+    </div>
+  </div>
+</body>
+</html>

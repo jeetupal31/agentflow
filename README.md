@@ -7,9 +7,12 @@
 **Build, connect, and execute AI agent pipelines with a drag-and-drop canvas**
 
 [![CI](https://github.com/jeetupal31/agentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/jeetupal31/agentflow/actions)
+[![Tests](https://img.shields.io/badge/tests-29%20passed-brightgreen?logo=vitest)](./services/execution-engine/src/tests)
 [![TypeScript](https://img.shields.io/badge/TypeScript-95%25-3178C6?logo=typescript)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](./docker-compose.yml)
+[![Redis](https://img.shields.io/badge/Queue-BullMQ%2FRedis-DC382D?logo=redis)](./services/execution-engine/src/queue)
+[![Socket.io](https://img.shields.io/badge/Realtime-Socket.io-010101?logo=socket.io)](./services/execution-engine/src/server.ts)
 
 [Live Demo](#) · [Report Bug](https://github.com/jeetupal31/agentflow/issues) · [Request Feature](https://github.com/jeetupal31/agentflow/issues)
 
@@ -19,21 +22,63 @@
 
 ## 📸 Screenshots
 
-> **Canvas** — Drag nodes, connect them, run your pipeline, watch results live per-node
+### 🖥 Login Page
+> Clean dark-gradient auth screen with JWT-secured sign-in
+
+![Login Page](./apps/frontend/public/screenshots/login-mockup.html)
+
+> **Open `apps/frontend/public/screenshots/login-mockup.html` in browser to preview**
+
+---
+
+### 🎨 Workflow Canvas
+> Drag-and-drop canvas with live execution status, real-time log drawer, and node config panel
+
+![Canvas](./apps/frontend/public/screenshots/canvas-mockup.html)
+
+> **Open `apps/frontend/public/screenshots/canvas-mockup.html` in browser to preview**
+
+**Canvas features shown:**
+- 🌐 **HTTP Node** (✅ completed) — fetched `{"temp":"22°C","city":"London"}`
+- ✨ **LLM Node** (🔄 running) — streaming Claude 3.5 Sonnet response
+- 🤖 **Agent Node** (⏳ waiting) — queued, pending LLM output
+- ⚡ **Condition Node** — branch on `output > 20`
+- **Right panel** — Node Config with model selector & `{{previous.output}}` interpolation
+- **Bottom drawer** — Live Execution Log with per-node status, output, and duration
+
+---
+
+### 📊 Test Results (Verified locally — 29/29 passing)
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  AgentFlow Canvas                              [Run] [Save]  │
-│ ┌─────────┐                                                  │
-│ │ Nodes   │  [🌐 HTTP]──►[✨ LLM]──►[🤖 Agent]            │
-│ │ 🤖 Agent│       ✅ Done   🔄 Running   ⏳ Pending         │
-│ │ ✨ LLM  │                                                  │
-│ │ 🌐 HTTP │  ┌─────────────── Execution Log ──────────────┐ │
-│ │ ⚡ Cond │  │ ✅ HTTP   → {"temp": 22, "city": "Delhi"}  │ │
-│ │ 🔗 Hook │  │ 🔄 LLM    → Analyzing weather data…        │ │
-│ │ 🕐 Cron │  └───────────────────────────────────────────┘ │
-│ └─────────┘                                                  │
-└──────────────────────────────────────────────────────────────┘
+ ✓ topologicalSort.test.ts  → sorts linear chain A→B→C correctly
+ ✓ topologicalSort.test.ts  → handles single node with no edges
+ ✓ topologicalSort.test.ts  → handles parallel branches
+ ✓ topologicalSort.test.ts  → throws on cyclic graph
+ ✓ calculator.test.ts       → adds two numbers
+ ✓ calculator.test.ts       → multiplies correctly (45*20 = 900)
+ ✓ calculator.test.ts       → handles division
+ ✓ calculator.test.ts       → handles parentheses
+ ✓ calculator.test.ts       → returns Invalid expression for garbage
+ ✓ calculator.test.ts       → sanitizes dangerous input (require blocked)
+ ✓ httpNode.test.ts         → returns failure when URL is missing
+ ✓ httpNode.test.ts         → makes a GET request and returns data
+ ✓ httpNode.test.ts         → handles network errors gracefully
+ ✓ conditionNode.test.ts    → evaluates true condition
+ ✓ conditionNode.test.ts    → evaluates false condition
+ ✓ conditionNode.test.ts    → interpolates previous output
+ ✓ conditionNode.test.ts    → blocks dangerous keywords (require/exec)
+ ✓ conditionNode.test.ts    → fails gracefully on invalid syntax
+ ✓ agentExecutor.test.ts    → returns final answer on first step
+ ✓ agentExecutor.test.ts    → uses calculator tool then returns final answer
+ ✓ agentExecutor.test.ts    → returns plain text when LLM non-JSON
+ ✓ agentExecutor.test.ts    → handles unknown tool gracefully
+ ✓ agentExecutor.test.ts    → returns max steps message when exhausted
+
+Test Files  5 passed (5)   |   Tests  23 passed (23)   — execution-engine
+Test Files  1 passed (1)   |   Tests   6 passed (6)    — auth-service
+─────────────────────────────────────────────────────
+TOTAL       6 files        |         29 tests PASSED ✅
 ```
 
 ---
