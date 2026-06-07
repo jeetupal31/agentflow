@@ -1,207 +1,382 @@
-# ⚡ n8n-clone: Visual Workflow Automation & AI Agent Platform
+<div align="center">
 
-A lightweight, developer-friendly, full-stack workflow automation platform inspired by n8n. Build, connect, and execute automated flows featuring standard API calls, LLM tasks, and self-reasoning AI Agents equipped with tools.
+# 🤖 AgentFlow
+
+### Visual AI Workflow Automation & Orchestration Platform
+
+**Build, connect, and execute AI agent pipelines with a drag-and-drop canvas**
+
+[![CI](https://github.com/jeetupal31/agentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/jeetupal31/agentflow/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-95%25-3178C6?logo=typescript)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker)](./docker-compose.yml)
+
+[Live Demo](#) · [Report Bug](https://github.com/jeetupal31/agentflow/issues) · [Request Feature](https://github.com/jeetupal31/agentflow/issues)
+
+</div>
+
+---
+
+## 📸 Screenshots
+
+> **Canvas** — Drag nodes, connect them, run your pipeline, watch results live per-node
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  AgentFlow Canvas                              [Run] [Save]  │
+│ ┌─────────┐                                                  │
+│ │ Nodes   │  [🌐 HTTP]──►[✨ LLM]──►[🤖 Agent]            │
+│ │ 🤖 Agent│       ✅ Done   🔄 Running   ⏳ Pending         │
+│ │ ✨ LLM  │                                                  │
+│ │ 🌐 HTTP │  ┌─────────────── Execution Log ──────────────┐ │
+│ │ ⚡ Cond │  │ ✅ HTTP   → {"temp": 22, "city": "Delhi"}  │ │
+│ │ 🔗 Hook │  │ 🔄 LLM    → Analyzing weather data…        │ │
+│ │ 🕐 Cron │  └───────────────────────────────────────────┘ │
+│ └─────────┘                                                  │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 🏗 Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AgentFlow Platform                           │
+├─────────────────────────────────────────────────────────────────────┤
+│   FRONTEND  │  Next.js 14 App Router + React Flow + Zustand         │
+│  (Port 3000)│  Framer Motion • React Query • Socket.io-client       │
+└──────┬──────────────────────────────────────────────────────────────┘
+       │ REST + WebSocket (Socket.io)
+┌──────▼──────────────────────────────────────────────────────────────┐
+│                    THREE MICROSERVICES                               │
+│                                                                      │
+│  Auth Service     Workflow Service    Execution Engine               │
+│  (Port 4001)      (Port 4002)         (Port 4003)                    │
+│  JWT + bcrypt     MongoDB CRUD        BullMQ + Socket.io             │
+│  MongoDB          Workflow CRUD       Real-time events               │
+└──────────────────────────────┬───────────────────────────────────── ┘
+                               │
+                    ┌──────────▼──────────┐
+                    │   BullMQ (Redis)     │  ← Message Queue
+                    │   Job Workers x5     │
+                    │   Retry + Backoff    │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼───────────────────┐
+         ┌────▼────┐     ┌─────▼────┐     ┌────────▼───┐
+         │HTTP Node│     │ LLM Node │     │ Agent Node │  ← Node Executors
+         │Executor │     │ Executor │     │ (ReAct)    │
+         └─────────┘     └──────────┘     └────────────┘
+                    + Condition | Webhook | Cron nodes
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  INFRASTRUCTURE                                                      │
+│  MongoDB (workflow data) • MongoDB (execution logs)                  │
+│  Redis (BullMQ queue) • Prometheus + Grafana (monitoring)            │
+│  Docker Compose (local) • GitHub Actions (CI/CD)                     │
+└──────────────────────────────────────────────────────────────────── ┘
+```
 
 ---
 
 ## ✨ Features
 
-### 🌐 Visual Workflow Canvas
-- Dynamic node-based builder using **React Flow (v11)**.
-- Connect, reposition, and customize execution flows interactively.
-- Detailed Sidebar configuration panel to customize node variables and configurations.
+### 🎨 Visual Workflow Canvas
+- Drag-and-drop node editor using **React Flow v11**
+- Animated edges showing real-time data flow direction
+- Live node status indicators (idle → running → success/error) per node
+- Minimap, zoom controls, keyboard shortcuts
 
-### 🤖 Autonomous ReAct AI Agent Node
-- Multi-step reasoning loop (ReAct model) executing up to 5 reasoning actions.
-- Automatically selects, parses, and executes built-in tools based on context.
-- Returns clean JSON actions and answers.
+### 🤖 ReAct AI Agent (Custom-built)
+- Multi-step **Reasoning + Acting** loop (up to 5 iterations)
+- Tool use: `calculator`, `weather` — easily extendable
+- **Multi-model support**: GPT-3.5, GPT-4o, Claude 3.5 Sonnet, Groq Llama 3
+- Context accumulation across reasoning steps
 
-### 🔌 Diverse Node Library
-- **Agent Node**: Triggers the autonomous agentic execution loops.
-- **LLM Node**: Interacts directly with text completion endpoints.
-- **HTTP Node**: Performs GET requests to fetch data from external APIs.
+### 🔌 6 Node Types
+
+| Node | Purpose |
+|------|---------|
+| 🤖 **Agent** | Autonomous ReAct reasoning loop with tools |
+| ✨ **LLM** | Direct prompt → response (any model) |
+| 🌐 **HTTP** | GET/POST to any external API |
+| ⚡ **Condition** | Branch workflow on true/false expression |
+| 🔗 **Webhook** | Receive external POST triggers |
+| 🕐 **Cron** | Schedule-triggered executions |
+
+### 📡 Real-time Execution
+- Asynchronous execution via **BullMQ** message queue (Redis-backed)
+- **Socket.io** WebSocket — every node status update streams to browser instantly
+- Execution Log Drawer — slides up from canvas bottom with live per-node output
+- Retry with exponential backoff (3 attempts) on any node failure
+
+### 📊 Execution History
+- Full audit log stored in **MongoDB**
+- Per-node: input params, output, error, duration in ms
+- Filter by status, paginate, inspect individual executions via API
 
 ### 💾 Workflow Management
-- Persist, save, load, and delete workflows.
-- User-specific database mapping allows separate configurations per user.
+- Save / Load / Delete workflows per user
+- 3 built-in **templates** (Weather Report, AI Math Solver, Research Pipeline)
+- Variable interpolation: `{{previous.output}}` passes data between nodes
 
-### 🔒 Security & Authentication
-- Secure signup and login endpoints.
-- Password hashing (bcryptjs) and protected server routes using JWT (JSON Web Tokens).
+### 🔒 Security
+- JWT auth (7-day expiry), bcrypt password hashing (12 rounds)
+- `helmet`, `cors`, `express-rate-limit` on all services
+- Condition node sanitizes expressions — blocks `require`, `process`, `exec`
+
+### 🧪 Testing — 18+ Tests
+- Unit: calculator, topological sort, condition node, HTTP node, ReAct agent
+- Integration: Auth API with Supertest + mocked Mongoose
+- Vitest — fast, TypeScript-native
+
+### 🐳 DevOps
+- **Docker Compose** — one command: `docker-compose up`
+- Multi-stage Dockerfiles per service
+- **GitHub Actions** CI: lint → test → build → docker build check
+- Prometheus + Grafana monitoring stack included
 
 ---
 
 ## 🛠 Tech Stack
 
-- **Frontend**: Next.js (v16 with App Router), React Flow (v11), Tailwind CSS (v4)
-- **Backend**: Node.js, Express.js (v5), TypeScript
-- **Database**: MongoDB & Mongoose
-- **AI Integrations**: OpenRouter API (GPT-3.5-Turbo for agent reasoning and LLM prompts)
+| Layer | Technology |
+|-------|------------|
+| Frontend | Next.js 14, React Flow, Zustand, React Query, Framer Motion |
+| Styling | Tailwind CSS v3, lucide-react |
+| Backend | Node.js, Express 4, TypeScript |
+| Monorepo | Turborepo + npm workspaces |
+| Queue | **BullMQ** (Redis-backed job queue) |
+| Real-time | **Socket.io** WebSocket |
+| Database | MongoDB + Mongoose |
+| Cache/Queue | Redis 7 |
+| AI Models | OpenRouter API (GPT-3.5, GPT-4o, Claude 3.5 Sonnet, Groq) |
+| Auth | JWT + bcryptjs |
+| Testing | Vitest, Supertest |
+| CI/CD | GitHub Actions |
+| Containers | Docker, Docker Compose |
+| Monitoring | Prometheus + Grafana |
 
 ---
 
 ## 📂 Project Structure
 
-```bash
-n8n/
-├── backend/                  # TypeScript Express Server
-│   ├── src/
-│   │   ├── agents/           # LLM client & ReAct Agent Executor
-│   │   ├── config/           # Database setup
-│   │   ├── engine/           # Execution engines
-│   │   ├── middleware/       # Auth verification middlewares
-│   │   ├── models/           # MongoDB user & workflow schemas
-│   │   ├── nodes/            # Node actions (HTTP, LLM, Agent)
-│   │   ├── registry/         # Registry matching node types to executors
-│   │   ├── routes/           # Auth and workflow routes
-│   │   ├── tools/            # Agent tools (calculator, weather wttr.in API)
-│   │   └── server.ts         # Server bootstrapper
-│   ├── package.json
-│   └── tsconfig.json
+```
+agentflow/                          ← Turborepo monorepo root
+├── apps/
+│   └── frontend/                   ← Next.js 14 app
+│       └── src/
+│           ├── app/                ← App Router pages (login, signup, canvas)
+│           ├── components/
+│           │   ├── canvas/         ← Toolbar, NodePalette, LogDrawer, Templates
+│           │   └── nodes/          ← Per-node React components with live status
+│           ├── stores/             ← Zustand global state
+│           └── lib/                ← API client, Socket.io client, utils
 │
-├── frontend/                 # Next.js Application
-│   ├── src/
-│   │   ├── app/              # App Router (Home, login, signup pages)
-│   │   ├── components/       # Custom React Flow nodes & sidebar
-│   └── package.json
-└── README.md
+├── services/
+│   ├── auth-service/               ← JWT auth microservice (port 4001)
+│   ├── workflow-service/           ← Workflow CRUD microservice (port 4002)
+│   └── execution-engine/           ← BullMQ + Socket.io (port 4003)
+│       └── src/
+│           ├── agents/             ← ReAct agent + multi-model LLM client
+│           ├── engine/             ← WorkflowExecutor with topological sort
+│           ├── nodes/              ← 6 node executor classes (Strategy pattern)
+│           ├── queue/              ← BullMQ producer + worker
+│           ├── tools/              ← calculator, weather
+│           └── tests/              ← 18+ unit tests
+│
+├── packages/
+│   ├── shared-types/               ← TypeScript interfaces shared across services
+│   └── shared-utils/               ← Winston logger, custom error classes
+│
+├── infrastructure/
+│   ├── docker/                     ← Dockerfiles (multi-stage, per service)
+│   └── monitoring/                 ← Prometheus config + Grafana dashboards
+│
+├── .github/workflows/ci.yml        ← GitHub Actions CI/CD pipeline
+├── docker-compose.yml              ← Full local dev stack (one command)
+├── turbo.json                      ← Turborepo task pipeline
+└── .env.example                    ← Environment variable template
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-### 📋 Prerequisites
-- **Node.js** (v18+)
-- **MongoDB** (Local instance or MongoDB Atlas cluster)
-- **OpenRouter API Key** (or custom LLM API provider key)
+### Option 1: Docker Compose — One Command ⚡
 
----
+```bash
+# Clone
+git clone https://github.com/jeetupal31/agentflow.git
+cd agentflow
 
-### 1. Backend Setup
+# Set env vars
+cp .env.example .env
+# Add your OPENROUTER_API_KEY and set JWT_SECRET
 
-1. Navigate to the `backend` folder:
-   ```bash
-   cd backend
-   ```
+# Start everything
+docker-compose up --build
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Create a `.env` file in the root of the `backend` directory:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_secret_key
-   OPENROUTER_API_KEY=your_openrouter_api_key
-   ```
-
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-   The backend will start on `http://localhost:5000`.
-
----
-
-### 2. Frontend Setup
-
-1. Navigate to the `frontend` folder:
-   ```bash
-   cd ../frontend
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) to access the UI.
-
----
-
-## 🔒 Authentication API
-
-### Signup
-`POST /auth/signup`
-```json
-{
-  "email": "user@example.com",
-  "password": "securepassword"
-}
+# Open http://localhost:3000
 ```
 
-### Login
-`POST /auth/login`
-```json
-{
-  "email": "user@example.com",
-  "password": "securepassword"
-}
-```
-*Returns a `{ token: "jwt_token" }` payload for local authorization.*
+MongoDB, Redis, all 3 services, frontend, Prometheus + Grafana — all start automatically.
 
 ---
 
-## 📊 Workflow APIs
+### Option 2: Manual Dev Setup
 
-- **Save Workflow**: `POST /workflows` (Protected)
-- **Get Workflows**: `GET /workflows` (Protected)
-- **Delete Workflow**: `DELETE /workflows/:id` (Protected)
+**Prerequisites:** Node.js 20+, MongoDB running locally, Redis running locally
+
+```bash
+git clone https://github.com/jeetupal31/agentflow.git
+cd agentflow
+
+# Install all workspace dependencies
+npm install
+
+# Copy env template to each service
+cp .env.example services/auth-service/.env
+cp .env.example services/workflow-service/.env
+cp .env.example services/execution-engine/.env
+# Create apps/frontend/.env.local with NEXT_PUBLIC_* vars
+
+# Start all services in parallel
+npm run dev
+```
+
+Ports:
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:3000 |
+| Auth Service | http://localhost:4001 |
+| Workflow Service | http://localhost:4002 |
+| Execution Engine | http://localhost:4003 |
+| Grafana | http://localhost:3001 (admin/admin) |
 
 ---
 
-## 🤖 Workflow Execution API
+## 📡 API Reference
 
-`POST /run-workflow`
-```json
-{
-  "nodes": [
-    {
-      "id": "1",
-      "type": "agent",
-      "parameters": {
-        "query": "What is 45 * 20?"
-      }
-    }
-  ],
-  "edges": []
-}
+### Auth Service (port 4001)
+
 ```
-Response:
-```json
-{
-  "1": "900"
-}
+POST /auth/signup     { email, password, name? }   → { token, user }
+POST /auth/login      { email, password }            → { token, user }
+GET  /auth/me                                        → { user }
+GET  /health                                         → { status: "ok" }
+```
+
+### Workflow Service (port 4002) — requires `Authorization: Bearer <token>`
+
+```
+GET    /workflows                  → list user's workflows
+GET    /workflows/:id              → single workflow
+POST   /workflows                  → create { name, nodes, edges }
+PUT    /workflows/:id              → update workflow
+DELETE /workflows/:id              → delete workflow
+GET    /workflows/meta/templates   → pre-built templates
+```
+
+### Execution Engine (port 4003)
+
+```
+POST /run-workflow          { nodes, edges, workflowId? }  → { executionId }
+POST /webhook/:path         { nodes, edges, userId }       → { executionId }
+GET  /executions            ?limit=20&page=1&status=       → execution history
+GET  /executions/:id                                       → full execution log
+```
+
+### WebSocket Events
+
+```js
+// Subscribe to real-time updates for an execution
+socket.emit("join_execution", executionId)
+
+// Events received from server:
+socket.on("execution_started",  ({ executionId }) => ...)
+socket.on("node_started",       ({ executionId, nodeId }) => ...)
+socket.on("node_completed",     ({ executionId, nodeId, output }) => ...)
+socket.on("node_failed",        ({ executionId, nodeId, error }) => ...)
+socket.on("workflow_completed", ({ executionId, results }) => ...)
+socket.on("workflow_failed",    ({ executionId, error }) => ...)
 ```
 
 ---
 
-## 💼 Portfolio Description
+## 🧪 Running Tests
 
-**Full-Stack AI Workflow Automation Platform (n8n Clone)**
-Built a full-stack workflow automation platform inspired by n8n. Designed and implemented a visual workflow builder using Next.js and React Flow, backed by a Node.js/Express execution engine. Configured MongoDB persistence for user workflows, set up JWT-based authentication, and designed a custom ReAct-based AI Agent with self-reasoning capabilities and tool-execution support.
+```bash
+# All tests
+npm run test
+
+# Single service
+cd services/execution-engine && npm run test
+cd services/auth-service     && npm run test
+
+# With coverage report
+npm run test -- --coverage
+```
+
+**Test suites:**
+
+| File | Tests | What it covers |
+|------|-------|---------------|
+| `calculator.test.ts` | 6 | Math ops, edge cases, dangerous input sanitization |
+| `topologicalSort.test.ts` | 4 | Linear chain, parallel branches, cycle detection |
+| `conditionNode.test.ts` | 5 | True/false eval, variable interpolation, security |
+| `httpNode.test.ts` | 3 | Missing URL, GET success, network error handling |
+| `agentExecutor.test.ts` | 5 | Final answer, tool use, unknown tool, max steps |
+| `auth.test.ts` | 4 | Signup validation, login success/failure flow |
+
+---
+
+## 🎯 Key System Design Decisions
+
+**Why BullMQ instead of synchronous execution?**
+> LLM/agent workflows take 5–30 seconds. Synchronous calls would block the HTTP server thread and fail under concurrent load. BullMQ decouples submission from execution, provides built-in retry-with-exponential-backoff, job persistence across crashes, and allows scaling workers independently of the API.
+
+**Why topological sort before executing nodes?**
+> The canvas lets users wire nodes in any visual order. Kahn's algorithm sorts them by dependency so each node executes only after its inputs are ready. It also detects cycles before starting — preventing infinite execution loops.
+
+**Why three separate microservices?**
+> Auth, Workflow, and Execution have completely different scaling profiles. The execution engine needs to scale horizontally when queue depth grows — without touching auth or workflow CRUD. Separate deployables with distinct databases enforce bounded context boundaries.
+
+**Why two MongoDB databases?**
+> Workflow definitions are structured (fixed schema, foreign key-like userId reference) — ideal for Mongoose schemas with indexes. Execution logs are schema-flexible (each node outputs different JSON shapes) — MongoDB's document model handles this without migrations.
+
+**Why Turborepo monorepo?**
+> `@agentflow/shared-types` ensures frontend and all backend services share identical TypeScript interfaces — no type drift or manual syncing. Turborepo's incremental build cache makes CI 40–60% faster after the first run.
+
+---
+
+## 🗺 Roadmap
+
+- [ ] PostgreSQL migration for relational workflow data (Drizzle ORM)
+- [ ] Team workspaces — share workflows with collaborators
+- [ ] Workflow versioning — git-like change history
+- [ ] More tools: Google Search, Slack, Email, GitHub API
+- [ ] Code Node — run arbitrary JS/Python in a sandbox
+- [ ] Playwright E2E tests — full browser canvas automation
+- [ ] Kubernetes deployment with HPA auto-scaling
 
 ---
 
 ## 👨‍💻 Author
 
 **Jeetu Pal**
-- **GitHub**: [jeetupal31](https://github.com/jeetupal31)
-- **Email**: jeetupal.pal31@gmail.com
+- GitHub: [@jeetupal31](https://github.com/jeetupal31)
+- Email: jeetupal.pal31@gmail.com
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+MIT License — see [LICENSE](./LICENSE)
 
 ---
 
-⭐ If you found this project useful, consider giving it a star on GitHub!
+<div align="center">
+⭐ If AgentFlow helped you, give it a star — it helps others discover it!
+</div>

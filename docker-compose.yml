@@ -1,0 +1,129 @@
+version: "3.9"
+
+services:
+  # ─── Databases ───────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: agentflow-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: agentflow-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Monitoring ──────────────────────────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: agentflow-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: agentflow-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafanadata:/var/lib/grafana
+
+  # ─── Services ────────────────────────────────────────────────────────────────
+  auth-service:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/Dockerfile.auth
+    container_name: agentflow-auth
+    ports:
+      - "4001:4001"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/agentflow
+      JWT_SECRET: ${JWT_SECRET:-super-secret-change-in-production}
+      AUTH_PORT: 4001
+      CORS_ORIGIN: http://localhost:3000
+      NODE_ENV: production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  workflow-service:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/Dockerfile.workflow
+    container_name: agentflow-workflow
+    ports:
+      - "4002:4002"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/agentflow
+      JWT_SECRET: ${JWT_SECRET:-super-secret-change-in-production}
+      WORKFLOW_PORT: 4002
+      CORS_ORIGIN: http://localhost:3000
+      NODE_ENV: production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  execution-engine:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/Dockerfile.engine
+    container_name: agentflow-engine
+    ports:
+      - "4003:4003"
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/agentflow_logs
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: ${JWT_SECRET:-super-secret-change-in-production}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      ENGINE_PORT: 4003
+      CORS_ORIGIN: http://localhost:3000
+      NODE_ENV: production
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./infrastructure/docker/Dockerfile.frontend
+    container_name: agentflow-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_AUTH_URL: http://localhost:4001
+      NEXT_PUBLIC_WORKFLOW_URL: http://localhost:4002
+      NEXT_PUBLIC_ENGINE_URL: http://localhost:4003
+    depends_on:
+      - auth-service
+      - workflow-service
+      - execution-engine
+    restart: unless-stopped
+
+volumes:
+  mongodata:
+  redisdata:
+  grafanadata:

@@ -1,0 +1,26 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY package.json ./
+COPY apps/frontend/package.json ./apps/frontend/
+COPY packages/shared-types/package.json ./packages/shared-types/
+RUN npm install --workspace=@agentflow/frontend --workspace=@agentflow/shared-types
+
+FROM base AS build
+COPY --from=deps /app/node_modules ./node_modules
+COPY packages/ ./packages/
+COPY apps/frontend/ ./apps/frontend/
+ARG NEXT_PUBLIC_AUTH_URL
+ARG NEXT_PUBLIC_WORKFLOW_URL
+ARG NEXT_PUBLIC_ENGINE_URL
+WORKDIR /app/apps/frontend
+RUN npm run build
+
+FROM base AS runner
+ENV NODE_ENV=production
+COPY --from=build /app/apps/frontend/.next/standalone ./
+COPY --from=build /app/apps/frontend/.next/static ./.next/static
+COPY --from=build /app/apps/frontend/public ./public
+EXPOSE 3000
+CMD ["node", "server.js"]
