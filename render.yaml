@@ -103,18 +103,11 @@ services:
     dockerfilePath: ./infrastructure/docker/Dockerfile.frontend
     dockerContext: .
     envVars:
+      # Full public URLs (fromService `host` drops the .onrender.com suffix, so we
+      # set the deployed URLs explicitly — the entrypoint writes them into /env.js).
       - key: NEXT_PUBLIC_AUTH_URL
-        fromService:
-          name: agentflow-auth
-          type: web
-          property: host
+        value: https://agentflow-auth.onrender.com
       - key: NEXT_PUBLIC_WORKFLOW_URL
-        fromService:
-          name: agentflow-workflow
-          type: web
-          property: host
+        value: https://agentflow-workflow.onrender.com
       - key: NEXT_PUBLIC_ENGINE_URL
-        fromService:
-          name: agentflow-engine
-          type: web
-          property: host
+        value: https://agentflow-engine-85kr.onrender.com
