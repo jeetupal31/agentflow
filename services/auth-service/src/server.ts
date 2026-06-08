@@ -13,8 +13,9 @@ dotenv.config()
 const logger = createLogger("auth-service")
 const app = express()
 
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000"
 app.use(helmet())
-app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3000", credentials: true }))
+app.use(cors({ origin: corsOrigin === "*" ? true : corsOrigin, credentials: true }))
 app.use(express.json())
 app.use(morgan("combined"))
 

@@ -1,8 +1,9 @@
 import axios from "axios"
+import { getRuntimeEnv } from "./runtimeEnv"
 
-const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL || "http://localhost:4001"
-const WORKFLOW_URL = process.env.NEXT_PUBLIC_WORKFLOW_URL || "http://localhost:4002"
-const ENGINE_URL = process.env.NEXT_PUBLIC_ENGINE_URL || "http://localhost:4003"
+const AUTH_URL = getRuntimeEnv("NEXT_PUBLIC_AUTH_URL", "http://localhost:4001")
+const WORKFLOW_URL = getRuntimeEnv("NEXT_PUBLIC_WORKFLOW_URL", "http://localhost:4002")
+const ENGINE_URL = getRuntimeEnv("NEXT_PUBLIC_ENGINE_URL", "http://localhost:4003")
 
 function authHeader() {
   const token = typeof window !== "undefined" ? localStorage.getItem("token") : null

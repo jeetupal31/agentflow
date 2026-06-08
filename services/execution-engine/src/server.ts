@@ -17,9 +17,12 @@ const logger = createLogger("execution-engine")
 const app = express()
 const httpServer = createServer(app)
 
+const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000"
+const allowedOrigin = corsOrigin === "*" ? true : corsOrigin
+
 // Socket.io setup
 const io = new SocketServer(httpServer, {
-  cors: { origin: process.env.CORS_ORIGIN || "http://localhost:3000", credentials: true }
+  cors: { origin: allowedOrigin, credentials: true }
 })
 
 io.on("connection", (socket) => {
@@ -40,7 +43,7 @@ io.on("connection", (socket) => {
 export { io }
 
 app.use(helmet())
-app.use(cors({ origin: process.env.CORS_ORIGIN || "http://localhost:3000", credentials: true }))
+app.use(cors({ origin: allowedOrigin, credentials: true }))
 app.use(express.json())
 app.use(morgan("combined"))
 

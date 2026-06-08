@@ -1,0 +1,4 @@
+# Shell scripts must always use LF, even on Windows checkouts, or the
+# Docker container's /bin/sh fails with "bad interpreter" on the CRLF.
+*.sh text eol=lf
+infrastructure/docker/* text eol=lf

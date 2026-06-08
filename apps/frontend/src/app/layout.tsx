@@ -11,6 +11,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Runtime backend URLs (written by the container at startup) */}
+        <script src="/env.js" />
         {/* Loaded at runtime by the browser (no build-time fetch ⇒ offline/Docker-safe) */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

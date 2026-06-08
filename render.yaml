@@ -40,10 +40,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: CORS_ORIGIN
-        fromService:
-          name: agentflow-frontend
-          type: web
-          property: host
+        value: "*"
 
   # ─── Workflow service ──────────────────────────────────────────────────────
   - type: web
@@ -66,10 +63,7 @@ services:
       - key: MONGO_URI
         sync: false
       - key: CORS_ORIGIN
-        fromService:
-          name: agentflow-frontend
-          type: web
-          property: host
+        value: "*"
 
   # ─── Execution engine (BullMQ worker + Socket.io) ──────────────────────────
   - type: web
@@ -99,10 +93,7 @@ services:
       - key: OPENROUTER_API_KEY
         sync: false
       - key: CORS_ORIGIN
-        fromService:
-          name: agentflow-frontend
-          type: web
-          property: host
+        value: "*"
 
   # ─── Frontend (Next.js 14) ─────────────────────────────────────────────────
   - type: web
