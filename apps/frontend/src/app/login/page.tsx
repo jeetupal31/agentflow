@@ -19,7 +19,7 @@ export default function LoginPage() {
       const res = await authApi.login({ email, password })
       localStorage.setItem("token", res.data.data.token)
       toast.success("Welcome back!")
-      router.push("/")
+      router.push("/app")
     } catch (err: any) {
       toast.error(err.response?.data?.error || "Login failed")
     } finally {

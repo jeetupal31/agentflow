@@ -20,7 +20,7 @@ export default function SignupPage() {
       const res = await authApi.signup({ name, email, password })
       localStorage.setItem("token", res.data.data.token)
       toast.success("Account created! Welcome to AgentFlow.")
-      router.push("/")
+      router.push("/app")
     } catch (err: any) {
       toast.error(err.response?.data?.error || "Signup failed")
     } finally {

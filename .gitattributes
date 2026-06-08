@@ -2,3 +2,9 @@
 # Docker container's /bin/sh fails with "bad interpreter" on the CRLF.
 *.sh text eol=lf
 infrastructure/docker/* text eol=lf
+
+# Binary assets — never apply text/EOL conversion (would corrupt them)
+*.pdf binary
+*.png binary
+*.jpg binary
+*.ico binary
