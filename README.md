@@ -22,29 +22,29 @@
 
 ## 📸 Screenshots
 
-### 🖥 Login Page
-> Clean dark-gradient auth screen with JWT-secured sign-in
+> Real screenshots of the running app (captured via headless Chrome against the
+> live local stack — not mockups).
 
-![Login Page](./apps/frontend/public/screenshots/login-mockup.html)
+### 🎨 Workflow Canvas — live execution
+> Drag-and-drop canvas with real-time per-node status streaming over Socket.io. Here
+> an **HTTP node** fetched live weather from `wttr.in`, piped into an **LLM node** that
+> summarized it — both green, with the execution-log drawer showing real outputs.
 
-> **Open `apps/frontend/public/screenshots/login-mockup.html` in browser to preview**
+![Workflow execution](./apps/frontend/public/screenshots/04-execution.png)
 
----
+### 🧩 Building a workflow
+> Premium dark canvas, gradient node palette, templates, and the glass toolbar.
 
-### 🎨 Workflow Canvas
-> Drag-and-drop canvas with live execution status, real-time log drawer, and node config panel
+![Workflow canvas](./apps/frontend/public/screenshots/03-canvas.png)
 
-![Canvas](./apps/frontend/public/screenshots/canvas-mockup.html)
+### 🔐 Authentication
+> Glassmorphism auth screens with JWT-secured sign-in / sign-up.
 
-> **Open `apps/frontend/public/screenshots/canvas-mockup.html` in browser to preview**
+| Sign in | Sign up |
+|---------|---------|
+| ![Login](./apps/frontend/public/screenshots/01-login.png) | ![Signup](./apps/frontend/public/screenshots/02-signup.png) |
 
-**Canvas features shown:**
-- 🌐 **HTTP Node** (✅ completed) — fetched `{"temp":"22°C","city":"London"}`
-- ✨ **LLM Node** (🔄 running) — streaming Claude 3.5 Sonnet response
-- 🤖 **Agent Node** (⏳ waiting) — queued, pending LLM output
-- ⚡ **Condition Node** — branch on `output > 20`
-- **Right panel** — Node Config with model selector & `{{previous.output}}` interpolation
-- **Bottom drawer** — Live Execution Log with per-node status, output, and duration
+> Regenerate any time with `node scripts/screenshots.mjs` (requires the stack running).
 
 ---
 
@@ -249,24 +249,38 @@ agentflow/                          ← Turborepo monorepo root
 
 ## 🚀 Getting Started
 
-### Option 1: Docker Compose — One Command ⚡
+### Option 1: Zero-config local — one script, no DB install ⚡
+
+Spins up an **in-memory MongoDB**, all 3 backends, and the frontend in one process.
+Only prerequisite is Node 20+ and a Redis 5+ instance (BullMQ needs ≥5).
 
 ```bash
-# Clone
 git clone https://github.com/jeetupal31/agentflow.git
 cd agentflow
+npm install
 
-# Set env vars
-cp .env.example .env
-# Add your OPENROUTER_API_KEY and set JWT_SECRET
+# add your key (gitignored)
+echo "OPENROUTER_API_KEY=sk-or-..." > services/execution-engine/.env
 
-# Start everything
-docker-compose up --build
+node dev-start.mjs        # ➜ http://localhost:3000
+```
 
-# Open http://localhost:3000
+### Option 2: Docker Compose — full stack ⚡
+
+```bash
+git clone https://github.com/jeetupal31/agentflow.git
+cd agentflow
+cp .env.example .env       # set OPENROUTER_API_KEY + JWT_SECRET
+docker compose up --build  # ➜ http://localhost:3000
 ```
 
 MongoDB, Redis, all 3 services, frontend, Prometheus + Grafana — all start automatically.
+
+### Option 3: Deploy to the cloud (free tier) ☁️
+
+Render Blueprint + MongoDB Atlas + Upstash/Render Redis — **$0/month**. One-click from
+[`render.yaml`](./render.yaml). Full step-by-step (incl. Vercel & AWS paths) in
+**[DEPLOYMENT.md](./DEPLOYMENT.md)**.
 
 ---
 

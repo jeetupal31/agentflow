@@ -1,0 +1,129 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# AgentFlow — Render Blueprint (100% free tier)
+#
+# One-click deploy: push this repo to GitHub, then on Render:
+#   New ➜ Blueprint ➜ pick your repo ➜ Apply.
+#
+# Free-tier services used:
+#   • 3 backend web services + 1 frontend (Render Free web services)
+#   • Render Key Value (free Redis-compatible, 25 MB) for BullMQ
+#   • MongoDB Atlas M0 (free 512 MB) — set MONGO_URI in the dashboard
+#
+# Secrets you must set in the Render dashboard (marked sync:false):
+#   • MONGO_URI            (from MongoDB Atlas — used by all three services)
+#   • OPENROUTER_API_KEY   (from openrouter.ai — engine only)
+# JWT_SECRET is auto-generated on the auth service and shared with the others.
+# ─────────────────────────────────────────────────────────────────────────────
+services:
+  # ─── Free Redis-compatible store for BullMQ ────────────────────────────────
+  - type: keyvalue
+    name: agentflow-redis
+    plan: free
+    maxmemoryPolicy: noeviction   # required by BullMQ
+    ipAllowList: []               # only reachable from Render services
+
+  # ─── Auth service ──────────────────────────────────────────────────────────
+  - type: web
+    name: agentflow-auth
+    runtime: docker
+    plan: free
+    dockerfilePath: ./infrastructure/docker/Dockerfile.auth
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: AUTH_PORT
+        value: 4001
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: MONGO_URI
+        sync: false
+      - key: CORS_ORIGIN
+        fromService:
+          name: agentflow-frontend
+          type: web
+          property: host
+
+  # ─── Workflow service ──────────────────────────────────────────────────────
+  - type: web
+    name: agentflow-workflow
+    runtime: docker
+    plan: free
+    dockerfilePath: ./infrastructure/docker/Dockerfile.workflow
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: WORKFLOW_PORT
+        value: 4002
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService:
+          name: agentflow-auth
+          type: web
+          envVarKey: JWT_SECRET
+      - key: MONGO_URI
+        sync: false
+      - key: CORS_ORIGIN
+        fromService:
+          name: agentflow-frontend
+          type: web
+          property: host
+
+  # ─── Execution engine (BullMQ worker + Socket.io) ──────────────────────────
+  - type: web
+    name: agentflow-engine
+    runtime: docker
+    plan: free
+    dockerfilePath: ./infrastructure/docker/Dockerfile.engine
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: ENGINE_PORT
+        value: 4003
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        fromService:
+          name: agentflow-auth
+          type: web
+          envVarKey: JWT_SECRET
+      - key: MONGO_URI
+        sync: false           # point at your Atlas "agentflow_logs" database
+      - key: REDIS_URL
+        fromService:
+          name: agentflow-redis
+          type: keyvalue
+          property: connectionString
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: CORS_ORIGIN
+        fromService:
+          name: agentflow-frontend
+          type: web
+          property: host
+
+  # ─── Frontend (Next.js 14) ─────────────────────────────────────────────────
+  - type: web
+    name: agentflow-frontend
+    runtime: docker
+    plan: free
+    dockerfilePath: ./infrastructure/docker/Dockerfile.frontend
+    dockerContext: .
+    envVars:
+      - key: NEXT_PUBLIC_AUTH_URL
+        fromService:
+          name: agentflow-auth
+          type: web
+          property: host
+      - key: NEXT_PUBLIC_WORKFLOW_URL
+        fromService:
+          name: agentflow-workflow
+          type: web
+          property: host
+      - key: NEXT_PUBLIC_ENGINE_URL
+        fromService:
+          name: agentflow-engine
+          type: web
+          property: host

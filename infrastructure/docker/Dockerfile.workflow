@@ -11,6 +11,7 @@ RUN npm install --workspace=@agentflow/workflow-service --workspace=@agentflow/s
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY packages/ ./packages/
+COPY scripts/ ./scripts/
 COPY services/workflow-service/ ./services/workflow-service/
 WORKDIR /app/services/workflow-service
 RUN npm run build

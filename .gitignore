@@ -7,3 +7,6 @@ dist/
 *.log
 coverage/
 .turbo/
+*.rdb
+.cache/
+.DS_Store

@@ -1,7 +1,7 @@
 "use client"
 import { useWorkflowStore } from "@/stores/workflowStore"
 import { cn } from "@/lib/utils"
-import { X, CheckCircle2, XCircle, Loader2, Clock } from "lucide-react"
+import { X, CheckCircle2, XCircle, Loader2, Clock, Terminal } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 export default function ExecutionLogDrawer() {
@@ -20,15 +20,16 @@ export default function ExecutionLogDrawer() {
           animate={{ y: 0 }}
           exit={{ y: "100%" }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className="absolute bottom-0 left-52 right-0 z-30 bg-gray-900 text-white rounded-t-2xl shadow-2xl max-h-72 flex flex-col"
+          className="absolute bottom-0 left-60 right-0 z-30 glass text-white rounded-t-2xl shadow-panel max-h-72 flex flex-col"
         >
-          <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
             <div className="flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-brand-400" />
               <span className="font-semibold text-sm">Execution Log</span>
-              {executionId && <code className="text-xs text-gray-400 bg-gray-800 px-2 py-0.5 rounded">{executionId.slice(0, 8)}…</code>}
-              {isRunning && <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />}
+              {executionId && <code className="text-xs text-brand-300 bg-brand-500/10 border border-brand-500/20 px-2 py-0.5 rounded-md">{executionId.slice(0, 8)}…</code>}
+              {isRunning && <Loader2 className="w-4 h-4 text-brand-400 animate-spin" />}
             </div>
-            <button onClick={() => setShowLogDrawer(false)} className="text-gray-400 hover:text-white">
+            <button onClick={() => setShowLogDrawer(false)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
               <X className="w-4 h-4" />
             </button>
           </div>

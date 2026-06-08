@@ -100,19 +100,19 @@ export default function Toolbar({ onLogout }: { onLogout: () => void }) {
   }
 
   return (
-    <div className="absolute top-4 left-56 right-4 z-10 flex items-center gap-2">
+    <div className="absolute top-4 left-64 right-4 z-10 flex items-center gap-2 glass rounded-2xl px-3 py-2.5 shadow-panel">
       <input
         type="text"
         value={workflowName}
         onChange={(e) => setWorkflowName(e.target.value)}
-        placeholder="Workflow name…"
-        className="border border-gray-200 bg-white rounded-lg px-3 py-2 text-sm w-44 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm"
+        placeholder="Untitled workflow…"
+        className="bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-sm w-48 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/60 transition-all"
       />
 
       <button
         onClick={handleSave}
         disabled={saving}
-        className="flex items-center gap-1.5 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors"
+        className="flex items-center gap-1.5 bg-white/5 border border-white/10 text-slate-200 hover:bg-white/10 px-3 py-2 rounded-xl text-sm font-medium transition-colors"
       >
         {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
         Save
@@ -122,35 +122,35 @@ export default function Toolbar({ onLogout }: { onLogout: () => void }) {
         onClick={handleRun}
         disabled={isRunning}
         className={cn(
-          "flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all",
+          "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-lg",
           isRunning
-            ? "bg-gray-400 text-white cursor-not-allowed"
-            : "bg-brand-600 hover:bg-brand-700 text-white"
+            ? "bg-slate-600 text-slate-300 cursor-not-allowed"
+            : "bg-gradient-to-r from-brand-600 to-fuchsia-600 hover:from-brand-500 hover:to-fuchsia-500 text-white shadow-brand-600/30"
         )}
       >
-        {isRunning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4" />}
+        {isRunning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Play className="w-4 h-4 fill-current" />}
         {isRunning ? "Running…" : "Run"}
       </button>
 
       <button
         onClick={() => setShowLogDrawer(!showLogDrawer)}
         className={cn(
-          "flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border shadow-sm transition-colors",
-          showLogDrawer ? "bg-gray-900 text-white border-gray-900" : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+          "flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium border transition-colors",
+          showLogDrawer ? "bg-brand-500/20 text-brand-300 border-brand-500/40" : "bg-white/5 text-slate-200 border-white/10 hover:bg-white/10"
         )}
       >
         <Terminal className="w-4 h-4" />
         Logs
       </button>
 
-      <button onClick={toggleDarkMode} className="p-2 bg-white border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50">
+      <button onClick={toggleDarkMode} className="p-2 bg-white/5 border border-white/10 rounded-xl text-slate-200 hover:bg-white/10 transition-colors">
         {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
       </button>
 
       <div className="ml-auto">
         <button
           onClick={onLogout}
-          className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
+          className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-red-400 px-3 py-2 rounded-xl hover:bg-red-500/10 transition-colors"
         >
           <LogOut className="w-4 h-4" />
           Logout

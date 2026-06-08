@@ -55,7 +55,17 @@ export default function CanvasPage() {
   }
 
   return (
-    <div className="w-full h-screen relative overflow-hidden bg-slate-50">
+    <div className="w-full h-screen relative overflow-hidden bg-ink-900">
+      {/* edge gradient definition */}
+      <svg className="absolute w-0 h-0">
+        <defs>
+          <linearGradient id="edge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#6366f1" />
+            <stop offset="100%" stopColor="#d946ef" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <NodePalette />
       <Toolbar onLogout={handleLogout} />
       <WorkflowList />
@@ -63,7 +73,7 @@ export default function CanvasPage() {
       <ExecutionLogDrawer />
       <TemplateModal />
 
-      <div className="ml-52 h-full">
+      <div className="ml-60 h-full">
         <ReactFlow
           nodes={nodes as any}
           edges={edges as any}
@@ -92,9 +102,17 @@ export default function CanvasPage() {
           onPaneClick={() => setSelectedNode(null)}
           fitView
         >
-          <MiniMap nodeStrokeWidth={3} zoomable pannable className="!bottom-4 !right-4" />
+          <MiniMap
+            nodeStrokeWidth={3}
+            zoomable
+            pannable
+            className="!bottom-4 !right-4"
+            maskColor="rgba(10, 10, 15, 0.7)"
+            style={{ background: "#11121c" }}
+            nodeColor="#6366f1"
+          />
           <Controls className="!bottom-4 !left-4" />
-          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#cbd5e1" />
+          <Background variant={BackgroundVariant.Dots} gap={22} size={1.5} color="#2a2d44" />
         </ReactFlow>
       </div>
     </div>

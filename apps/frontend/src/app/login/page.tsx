@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { authApi } from "@/lib/api"
 import { toast } from "sonner"
-import { Layers, Loader2 } from "lucide-react"
+import { Workflow, Loader2, Mail, Lock, ArrowRight, Sparkles } from "lucide-react"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -28,56 +28,81 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900">
-      <div className="w-full max-w-sm">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <Layers className="w-8 h-8 text-brand-500" />
-          <h1 className="text-2xl font-bold text-white">AgentFlow</h1>
+    <div className="min-h-screen flex items-center justify-center mesh-bg p-4 relative overflow-hidden">
+      {/* Floating orbs */}
+      <div className="absolute top-1/4 -left-20 w-72 h-72 bg-brand-500/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 -right-20 w-72 h-72 bg-fuchsia-500/20 rounded-full blur-3xl" />
+
+      <div className="w-full max-w-md relative z-10 animate-float-up">
+        {/* Brand */}
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-500 to-fuchsia-500 flex items-center justify-center glow-indigo">
+              <Workflow className="w-6 h-6 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight gradient-text">AgentFlow</h1>
+          </div>
+          <p className="text-sm text-slate-400 flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+            Visual AI workflow automation
+          </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Sign in</h2>
-          <p className="text-sm text-gray-500 mb-6">Welcome back to your AI workflows</p>
+        {/* Card */}
+        <div className="glass rounded-2xl shadow-panel p-8">
+          <h2 className="text-xl font-bold text-white mb-1">Sign in</h2>
+          <p className="text-sm text-slate-400 mb-6">Welcome back to your AI workflows</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Email</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder="you@example.com"
-              />
+              <label className="text-xs font-medium text-slate-300 block mb-1.5 uppercase tracking-wider">Email</label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-3 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/60 focus:border-brand-500/60 transition-all"
+                  placeholder="you@example.com"
+                />
+              </div>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder="••••••••"
-              />
+              <label className="text-xs font-medium text-slate-300 block mb-1.5 uppercase tracking-wider">Password</label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-3 py-3 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/60 focus:border-brand-500/60 transition-all"
+                  placeholder="••••••••"
+                />
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 bg-brand-600 hover:bg-brand-700 text-white py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-60"
+              className="group w-full flex items-center justify-center gap-2 bg-gradient-to-r from-brand-600 to-fuchsia-600 hover:from-brand-500 hover:to-fuchsia-500 text-white py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-60 shadow-lg shadow-brand-600/30"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-              Sign in
+              {loading ? "Signing in…" : "Sign in"}
+              {!loading && <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-6">
+          <p className="text-center text-sm text-slate-400 mt-6">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="text-brand-600 hover:text-brand-700 font-medium">Sign up</Link>
+            <Link href="/signup" className="text-brand-400 hover:text-brand-300 font-semibold">Sign up</Link>
           </p>
         </div>
+
+        <p className="text-center text-xs text-slate-600 mt-6">
+          Build · Connect · Execute AI agent pipelines
+        </p>
       </div>
     </div>
   )

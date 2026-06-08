@@ -11,6 +11,7 @@ RUN npm install --workspace=@agentflow/auth-service --workspace=@agentflow/share
 FROM base AS build
 COPY --from=deps /app/node_modules ./node_modules
 COPY packages/ ./packages/
+COPY scripts/ ./scripts/
 COPY services/auth-service/ ./services/auth-service/
 WORKDIR /app/services/auth-service
 RUN npm run build

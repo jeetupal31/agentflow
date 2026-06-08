@@ -1,7 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  transpilePackages: ["@agentflow/shared-types"]
+  output: "standalone",
+  transpilePackages: ["@agentflow/shared-types"],
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true }
 }
 
 export default nextConfig

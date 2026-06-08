@@ -6,7 +6,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: { 50: "#f0f4ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca" },
+        brand: {
+          50: "#eef2ff",
+          100: "#e0e7ff",
+          400: "#818cf8",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3"
+        },
+        ink: {
+          900: "#0a0a0f",
+          800: "#11121c",
+          700: "#1a1b27",
+          600: "#252738"
+        },
         node: {
           agent:  { bg: "#eff6ff", border: "#3b82f6", text: "#1d4ed8" },
           llm:    { bg: "#faf5ff", border: "#a855f7", text: "#7e22ce" },
@@ -16,9 +30,14 @@ const config: Config = {
           cron:   { bg: "#f0f9ff", border: "#0ea5e9", text: "#0369a1" }
         }
       },
+      boxShadow: {
+        "node": "0 4px 20px rgba(0, 0, 0, 0.25)",
+        "panel": "0 12px 40px rgba(0, 0, 0, 0.5)"
+      },
       animation: {
-        "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "dash": "dash 1.5s linear infinite"
+        "pulse-slow": "pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "dash": "dash 1.5s linear infinite",
+        "float-up": "floatUp 0.35s ease-out"
       },
       keyframes: {
         dash: { "0%": { strokeDashoffset: "100" }, "100%": { strokeDashoffset: "0" } }

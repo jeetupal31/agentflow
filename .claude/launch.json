@@ -5,7 +5,7 @@
       "name": "agentflow-frontend",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "cwd": "apps/frontend",
+      "cwd": "C:/Users/jeetu Pal cr/Downloads/agentflow/apps/frontend",
       "port": 3000,
       "autoPort": false
     }
