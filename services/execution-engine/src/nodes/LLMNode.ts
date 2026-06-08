@@ -4,7 +4,16 @@ import { callLLM } from "../agents/llm"
 
 export class LLMNode extends BaseNode {
   async execute(input: NodeInput): Promise<NodeOutput> {
-    const { query, model = "openai/gpt-3.5-turbo", systemPrompt } = input.parameters
+    let { query, model = "openai/gpt-3.5-turbo", systemPrompt } = input.parameters
+
+    // Normalize short model names to OpenRouter format
+    const modelMap: Record<string, string> = {
+      "gpt-3.5-turbo": "openai/gpt-3.5-turbo",
+      "gpt-4o": "openai/gpt-4o",
+      "claude-3-5-sonnet": "anthropic/claude-3-5-sonnet",
+      "llama-3": "meta-llama/llama-3-8b-instruct"
+    }
+    if (modelMap[model]) model = modelMap[model]
 
     if (!query) return this.failure("Query is required for LLM node")
 

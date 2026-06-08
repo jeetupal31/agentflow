@@ -24,7 +24,13 @@ router.post("/run-workflow", async (req: Request, res: Response, next: NextFunct
 
     const executionId = uuidv4()
 
-    await enqueueWorkflow({ executionId, userId: user.id, workflowId, nodes, edges: edges || [], trigger: "manual" })
+    // Normalize: frontend sends node.data, executor expects node.parameters
+    const normalizedNodes = nodes.map((n: any) => ({
+      ...n,
+      parameters: n.parameters ?? n.data ?? {}
+    }))
+
+    await enqueueWorkflow({ executionId, userId: user.id, workflowId, nodes: normalizedNodes, edges: edges || [], trigger: "manual" })
 
     res.status(202).json({ success: true, data: { executionId, message: "Workflow queued for execution" } })
   } catch (err) { next(err) }

@@ -17,5 +17,8 @@
   },
   "devDependencies": {
     "turbo": "^2.3.3"
+  },
+  "dependencies": {
+    "mongodb-memory-server": "^11.2.0"
   }
 }
