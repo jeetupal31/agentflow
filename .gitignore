@@ -13,3 +13,8 @@ coverage/
 .claude/
 .idea/
 .vscode/
+
+# Private interview study material — never commit (local only)
+docs/INTERVIEW_GUIDE.md
+docs/AgentFlow-Interview-Guide.pdf
+scripts/make-guide-pdf.mjs

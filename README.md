@@ -7,7 +7,6 @@
 **Build, connect, and execute AI agent pipelines on a drag-and-drop canvas — with a microservice backend, a Redis-backed job queue, and real-time execution streaming.**
 
 [![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Open_App-6366f1?style=for-the-badge)](https://agentflow-frontend-2nhh.onrender.com)
-[![Interview Guide](https://img.shields.io/badge/📘_Interview_Guide-PDF-be185d?style=for-the-badge)](./docs/AgentFlow-Interview-Guide.pdf)
 
 [![CI](https://github.com/jeetupal31/agentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/jeetupal31/agentflow/actions)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -77,9 +76,6 @@
 **Request flow when you press “Run”:**
 `POST /run-workflow` → enqueue job in Redis → worker topologically sorts the DAG →
 executes each node → emits live Socket.io events → saves an `ExecutionLog` to MongoDB.
-
-> 📘 A full, plain-English explanation of every part (with diagrams, code, and interview
-> Q&A) is in **[docs/INTERVIEW_GUIDE.md](./docs/INTERVIEW_GUIDE.md)** (also as a [PDF](./docs/AgentFlow-Interview-Guide.pdf)).
 
 ---
 
@@ -163,7 +159,6 @@ ReAct agent loop, the HTTP node, and the security sandboxes.
 
 ## 📚 Documentation
 
-- 📘 **[Interview Guide (Markdown)](./docs/INTERVIEW_GUIDE.md)** · **[PDF](./docs/AgentFlow-Interview-Guide.pdf)** — every concept explained, basic → advanced, with Q&A
 - 🚀 **[Deployment Guide](./DEPLOYMENT.md)** — Render / Vercel / AWS, all free tier
 
 ---
