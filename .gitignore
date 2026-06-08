@@ -10,3 +10,6 @@ coverage/
 *.rdb
 .cache/
 .DS_Store
+.claude/
+.idea/
+.vscode/

@@ -6,6 +6,8 @@
 
 **Build, connect, and execute AI agent pipelines with a drag-and-drop canvas**
 
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Open_App-6366f1?style=for-the-badge)](https://agentflow-frontend-2nhh.onrender.com)
+
 [![CI](https://github.com/jeetupal31/agentflow/actions/workflows/ci.yml/badge.svg)](https://github.com/jeetupal31/agentflow/actions)
 [![Tests](https://img.shields.io/badge/tests-29%20passed-brightgreen?logo=vitest)](./services/execution-engine/src/tests)
 [![TypeScript](https://img.shields.io/badge/TypeScript-95%25-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -14,7 +16,11 @@
 [![Redis](https://img.shields.io/badge/Queue-BullMQ%2FRedis-DC382D?logo=redis)](./services/execution-engine/src/queue)
 [![Socket.io](https://img.shields.io/badge/Realtime-Socket.io-010101?logo=socket.io)](./services/execution-engine/src/server.ts)
 
-[Live Demo](#) · [Report Bug](https://github.com/jeetupal31/agentflow/issues) · [Request Feature](https://github.com/jeetupal31/agentflow/issues)
+**🌐 Live app → https://agentflow-frontend-2nhh.onrender.com**
+
+[Live Demo](https://agentflow-frontend-2nhh.onrender.com) · [Report Bug](https://github.com/jeetupal31/agentflow/issues) · [Request Feature](https://github.com/jeetupal31/agentflow/issues)
+
+> ⏱️ Hosted on a free tier — the first load may take ~30–50s while the services wake up, then it's fast.
 
 </div>
 
